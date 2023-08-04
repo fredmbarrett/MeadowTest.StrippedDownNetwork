@@ -23,6 +23,7 @@ namespace MeadowTest.StrippedDownNetwork
             Resolver.Log.Info("Run...");
 
             await NetworkController.Instance.InitializeWifiNetwork();
+            await NetworkController.Instance.WaitForNtpTimeUpdate();
         }
 
     }
