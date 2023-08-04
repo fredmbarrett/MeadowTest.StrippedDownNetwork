@@ -1,0 +1,50 @@
+# Uncomment additional options as needed.
+# To learn more about these config options, including custom application configuration settings, check out the Application Settings Configuration documentation.
+# http://developer.wildernesslabs.co/Meadow/Meadow.OS/Configuration/Application_Settings_Configuration/
+
+Lifecycle:
+  # Control whether Meadow will restart when an unhandled app exception occurs. Combine with Lifecycle > AppFailureRestartDelaySeconds to control restart timing.
+  RestartOnAppFailure: false
+  # # When app set to restart automatically on app failure, 
+  #AppFailureRestartDelaySeconds: 15
+
+# # Adjust the level of logging detail.
+Logging:
+  LogLevel:
+    Default: Trace
+    
+TestApp:
+    # === Device Settings
+    # Device name
+    DeviceName: MeadowTest
+
+    # ===  Wifi Settings
+    # SSID Name and password
+    WifiSsid: "{SSID}"
+    WifiPassword: "{PASSWORD}"
+
+    # Number of seconds to wait for wifi to wake up
+    WifiWakeUpDelaySeconds: 15
+
+    # Number of seconds to wait before restarting wifi communications
+    WifiTimeoutSeconds: 60
+
+    # Number of times to retry wifi initialization before failing
+    WifiMaxRetryCount: 3
+    
+    # === Cell Settings
+    # APN Name for the cellular network
+    CellApnName: ""
+
+    # Number of seconds to wait for cell to wake up
+    CellWakeUpDelaySeconds: 15
+
+    # Number of seconds to wait before restarting cell communications
+    CellTimeoutSeconds: 60
+
+    # Amount of time to wait between failed communication sets
+    CellRetryDelaySeconds: 900
+
+    # Number of times to retry cell communication before failing
+    CellMaxRetryCount: 3
+
