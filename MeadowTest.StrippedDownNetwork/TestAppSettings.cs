@@ -61,6 +61,20 @@ namespace MeadowTest.StrippedDownNetwork
             return Settings[hive] ?? defaultValue;
         }
 
+        private string ParseStringSettingAlt(string hive, string defaultValue)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(hive)) { return defaultValue; }
+                string result = Settings[hive] ?? defaultValue;
+                return result.Replace("\"", "");
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
+
         private int ParseIntSetting(string passedValue, int? defaultValue = 0)
         {
             string value = ParseStringSetting(passedValue, defaultValue.ToString());

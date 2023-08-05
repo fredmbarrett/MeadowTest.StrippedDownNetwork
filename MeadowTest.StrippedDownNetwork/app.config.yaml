@@ -34,7 +34,7 @@ TestApp:
     
     # === Cell Settings
     # APN Name for the cellular network
-    CellApnName: ""
+    CellApnName: 
 
     # Number of seconds to wait for cell to wake up
     CellWakeUpDelaySeconds: 15
