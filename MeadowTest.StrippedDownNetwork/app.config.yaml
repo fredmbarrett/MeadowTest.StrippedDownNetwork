@@ -20,8 +20,8 @@ TestApp:
 
     # ===  Wifi Settings
     # SSID Name and password
-    WifiSsid: "{SSID}"
-    WifiPassword: "{PASSWORD}"
+    WifiSsid: "AllynTech-IoT"
+    WifiPassword: "allyntech5510"
 
     # Number of seconds to wait for wifi to wake up
     WifiWakeUpDelaySeconds: 15

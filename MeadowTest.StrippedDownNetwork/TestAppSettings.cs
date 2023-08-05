@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MeadowTest.StrippedDownNetwork
 {
@@ -27,41 +28,75 @@ namespace MeadowTest.StrippedDownNetwork
         public int NtpTimeoutSeconds { get; set; } = 60;
         public int NtpMaxRetryCount { get; set; } = 5;
 
+        private Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>();
+
         public TestAppSettings() { }
 
         public TestAppSettings(Dictionary<string, string> settings)
         {
-            foreach (var s in settings)
+            Settings = settings;
+            foreach (var s in Settings)
             {
-                Resolver.Log.Trace($"{s.Key} = {s.Value}");
+                Resolver.Log.Trace($"{s.Key} = {s.Value} [{s.Value.ToAsciiHex()}]");
             }
 
-            DeviceName = settings["TestApp.DeviceName"] ?? "MeadowTest";
+            DeviceName = ParseStringSetting("TestApp.DeviceName", "MeadowTest");
 
-            WifiSsid = settings["TestApp.WifiSsid"] ?? "";
-            WifiPassword = settings["TestApp.WifiPassword"] ?? "";
-            WifiWakeUpDelaySeconds = ParseIntSetting(settings["TestApp.WifiWakeUpDelaySeconds"], 15);
-            WifiMaxRetryCount = ParseIntSetting(settings["TestApp.WifiMaxRetryCount"], 3);
-            WifiTimeoutSeconds = ParseIntSetting(settings["TestApp.WifiTimeoutSeconds"], 30);
+            WifiSsid = ParseStringSetting("TestApp.WifiSsid", "");
+            WifiPassword = ParseStringSetting("TestApp.WifiPassword", "");
+            WifiWakeUpDelaySeconds = ParseIntSetting("TestApp.WifiWakeUpDelaySeconds", 15);
+            WifiMaxRetryCount = ParseIntSetting("TestApp.WifiMaxRetryCount", 3);
+            WifiTimeoutSeconds = ParseIntSetting("TestApp.WifiTimeoutSeconds", 30);
 
-            CellApnName = settings["TestApp.CellApnName"] ?? "";
-            CellWakeUpDelaySeconds = ParseIntSetting(settings["TestApp.CellWakeUpDelaySeconds"], 15);
-            CellTimeoutSeconds = ParseIntSetting(settings["TestApp.CellTimeoutSeconds"], 60);
-            CellRetryDelaySeconds = ParseIntSetting(settings["TestApp.CellRetryDelaySeconds"], 900);
-            CellMaxRetryCount = ParseIntSetting(settings["TestApp.CellMaxRetryCount"], 3);
+            CellApnName = ParseStringSetting("TestApp.CellApnName", "");
+            CellWakeUpDelaySeconds = ParseIntSetting("TestApp.CellWakeUpDelaySeconds", 15);
+            CellTimeoutSeconds = ParseIntSetting("TestApp.CellTimeoutSeconds", 60);
+            CellRetryDelaySeconds = ParseIntSetting("TestApp.CellRetryDelaySeconds", 900);
+            CellMaxRetryCount = ParseIntSetting("TestApp.CellMaxRetryCount", 3);
         }
 
-        private int ParseIntSetting(string passedValue, int defaultValue)
+        private string ParseStringSetting(string hive, string defaultValue)
         {
-            Int32 result = -1;
+            if (string.IsNullOrWhiteSpace(hive)) { return defaultValue; }
+            return Settings[hive] ?? defaultValue;
+        }
 
-            if ((string.IsNullOrEmpty(passedValue)) || (!Int32.TryParse(passedValue, out result)))
-            {
-                result = defaultValue;
-            }
-
-            return result;
+        private int ParseIntSetting(string passedValue, int? defaultValue = 0)
+        {
+            string value = ParseStringSetting(passedValue, defaultValue.ToString());
+            return value.ToInt(defaultValue);
         }
     }
+}
 
+public static class SettingExtensions
+{
+    /// <summary>
+    /// Converts the string to an INT32 if a valid int value.
+    /// Returns either a default value or zero if string is missing not valid int.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns></returns>
+    public static int ToInt(this string value, int? defaultValue)
+    {
+        if ((string.IsNullOrEmpty(value)) || (!Int32.TryParse(value, out int result)))
+        {
+            result = defaultValue ?? 0;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Converts string to ASCII hex for display
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static string ToAsciiHex(this string value)
+    {
+        if (string.IsNullOrEmpty(value)) return string.Empty;
+        byte[] asciiBytes = Encoding.ASCII.GetBytes(value);
+        return BitConverter.ToString(asciiBytes);
+    }
 }
